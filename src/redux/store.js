@@ -1,9 +1,19 @@
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
 import { devToolsEnhancer } from '@redux-devtools/extension';
+import { contactsReduser } from '../redux/ContactsSlice';
+import { filterReducer } from '../redux/FilterSlice';
 
-const rootReducer = (state, action) => {
-  return state;
+// INIT STATE
+const initialState = {
+  contacts: [],
+  filter: '',
 };
+
+// RoOOT REDUCER
+const rootReducer = combineReducers({
+  contacts: contactsReduser,
+  filter: filterReducer,
+});
 
 const enhancer = devToolsEnhancer();
 
