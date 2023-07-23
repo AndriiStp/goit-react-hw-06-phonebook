@@ -1,21 +1,17 @@
-// FILTER INIT STATE + REDUCER
-const filterInitState = { filter: '' };
+import { createSlice } from '@reduxjs/toolkit';
 
-export const filterReducer = (state = filterInitState, action) => {
-  switch (action.type) {
-    case 'filter/search':
+const filterSlice = createSlice({
+  name: 'filter',
+  initialState: { filter: '' },
+  reducers: {
+    filterContact(state, action) {
       return {
         ...state,
         filter: action.payload,
       };
-    default:
-      return state;
-  }
-};
+    },
+  },
+});
 
-export const filterContact = filter => {
-  return {
-    type: 'filter/filterContact',
-    payload: filter,
-  };
-};
+export const { filterContact } = filterSlice.actions;
+export const filterReducer = filterSlice.reducer;

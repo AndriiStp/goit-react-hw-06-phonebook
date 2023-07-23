@@ -1,34 +1,24 @@
-// CONTACTS INIT STATE + REDUCER
-const contactsInitState = { contacts: [] };
+import { createSlice } from '@reduxjs/toolkit';
 
-export const contactsReducer = (state = contactsInitState, action) => {
-  switch (action.type) {
-    case 'contact/addContact':
+const contactsSlice = createSlice({
+  name: 'contact',
+  initialState: { contacts: [] },
+  reducers: {
+    addContact(state, action) {
       return {
         ...state,
         contacts: [...state.contacts, action.payload],
       };
-
-    case 'contact/deleteContact':
+    },
+    deleteContact(state, action) {
       return {
         ...state,
         contacts: state.contacts.filter(contact => contact !== action.payload),
       };
-    default:
-      return state;
-  }
-};
+    },
+  },
+});
 
-export const addContact = value => {
-  return {
-    type: 'contact/addContact',
-    payload: value,
-  };
-};
+export const { addContact, deleteContact } = contactsSlice.actions;
 
-export const deleteContact = value => {
-  return {
-    type: 'contact/deleteContact',
-    payload: value,
-  };
-};
+export const contactsReducer = contactsSlice.reducer;
