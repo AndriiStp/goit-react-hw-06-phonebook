@@ -1,50 +1,45 @@
-import { useState } from 'react';
 import css from './Form.module.css';
-import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/ContactsSlice';
 
-const Form = ({ onSubmitProp }) => {
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
-
-  const nameInputId = nanoid();
-  const numberInputId = nanoid();
-
-  const handleChange = e => {
-    const { name, value } = e.target;
-
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
-      case 'number':
-        setNumber(value);
-        break;
-      default:
-        return;
-    }
-  };
+const Form = () => {
+  const contacts = useSelector(state => state.contacts.contacts);
+  const dispatch = useDispatch();
 
   const handleAdd = e => {
     e.preventDefault();
-    onSubmitProp({ name, number });
-    reset();
-  };
+    const form = e.target;
+    const id = nanoid();
+    const { name, number } = form.elements;
 
-  const reset = () => {
-    setName('');
-    setNumber('');
+    const existingContact = contacts.find(
+      contact =>
+        contact.nameInput.toLowerCase() ===
+        form.elements.name.value.toLowerCase()
+    );
+
+    if (!existingContact) {
+      const nameInput = name.value;
+      const numberInput = number.value;
+
+      if (nameInput.trim() === '' || numberInput.trim() === '') {
+        alert('Please fill all required fields!');
+        return;
+      }
+      dispatch(addContact({ id, nameInput, numberInput }));
+      form.reset();
+    } else {
+      alert(`A contact with the name ${name.value} already exists`);
+    }
   };
 
   return (
     <form className={css.form} onSubmit={handleAdd}>
-      <label className={css.label} htmlFor={nameInputId}>
+      <label className={css.label} htmlFor="name">
         Name:
         <input
           className={css.input}
-          value={name}
-          onChange={handleChange}
-          id={nameInputId}
           type="text"
           name="name"
           pattern="^[A-Za-z\u0080-\uFFFF ']+$"
@@ -53,14 +48,11 @@ const Form = ({ onSubmitProp }) => {
         />
       </label>
 
-      <label className={css.label} htmlFor={numberInputId}>
+      <label className={css.label} htmlFor="number">
         Tel:
         <input
           className={css.input}
           type="tel"
-          value={number}
-          onChange={handleChange}
-          id={numberInputId}
           name="number"
           pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
           title="Valid Phone Number: Optional '+' Symbol, Digits, Spaces, Hyphens, and Parentheses"
@@ -73,7 +65,5 @@ const Form = ({ onSubmitProp }) => {
     </form>
   );
 };
-
-Form.propTypes = { onSubmitProp: PropTypes.func.isRequired };
 
 export default Form;

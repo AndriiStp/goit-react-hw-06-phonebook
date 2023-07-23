@@ -7,15 +7,10 @@ import Filter from 'components/Filter/Filter';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-const addContact = value => {
-  return {
-    type: 'contacts/add',
-  };
-};
-
 const App = () => {
   const dispatch = useDispatch();
   const currentContacts = useSelector(state => state.contacts);
+
   const [contacts, setContacts] = useState(() => {
     const inStorageContacts = localStorage.getItem('contacts');
     return inStorageContacts ? JSON.parse(inStorageContacts) : [];
